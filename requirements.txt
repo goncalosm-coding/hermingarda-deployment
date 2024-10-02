@@ -1,0 +1,15 @@
+streamlit
+cryptography
+openai
+python-dotenv
+langchain-openai
+langchain-community
+langchain-core
+langchain-chroma
+PyPDF2
+whisper
+numpy
+sounddevice
+scipy
+protobuf==3.20.*
+pypdf
