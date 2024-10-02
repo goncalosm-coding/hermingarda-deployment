@@ -101,7 +101,7 @@ def forward_message(user_prompt, assistant_response, recipient, users, sender):
 st.title(":violet[Hermingarda] - Your PNA Assistant")
 
 # User authentication section
-users_file = "users_data.json"
+users_file = "/var/data/users_data.json"
 users = load_user_data(users_file)
 
 # Check if user is logged in from the persisted JSON file
