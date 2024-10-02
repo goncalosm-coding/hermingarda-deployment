@@ -29,7 +29,7 @@ def check_openai_api_key(api_key):
         return False
     
 # Function to load or generate an encryption key
-def load_or_generate_key(key_file="encryption_key.key"):
+def load_or_generate_key(key_file="/tmp/encryption_key.key"):
     if os.path.exists(key_file):
         # Load the key from the file
         with open(key_file, "rb") as file:
