@@ -134,7 +134,6 @@ if not st.session_state.logged_in:
                         user_data = get_user_from_firebase(login_username)
                         st.session_state.messages = user_data.get("messages", [])
                         st.session_state.api_key = user_data.get("api_key", "")
-                        st.write(f"API Key Loaded: {st.session_state.api_key}")  # Debugging line
                         update_user_logged_in_state(login_username, True)
                         st.rerun()
                     else:
@@ -196,7 +195,6 @@ if st.session_state.logged_in:
         with st.chat_message("user"):
             st.markdown(prompt)
 
-        print(f"Using API Key: {st.session_state.api_key}")  # Debugging line
         response = query_rag(prompt, st.session_state.api_key)  # Use the cached API key from session state
         st.session_state.messages.append({"role": "assistant", "content": response})
 
