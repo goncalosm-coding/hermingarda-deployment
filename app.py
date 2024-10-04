@@ -12,6 +12,8 @@ import json
 # Load environment variables
 load_dotenv()
 
+openai_api_key = os.getenv("OPENAI_API_KEY")
+
 # Get the Firebase credentials JSON string from the environment variable
 firebase_credentials_json = os.getenv("FIREBASE_SDK_KEY")
 
@@ -148,13 +150,13 @@ if not st.session_state.logged_in:
         st.subheader("Register")
         register_username = st.text_input("Email", key="register_username")
         register_password = st.text_input("Password", type="password", key="register_password")
-        register_api_key = st.text_input("API Key", type="password", key="register_api_key")
+        # register_api_key = st.text_input("API Key", type="password", key="register_api_key")
 
         if st.button("Register"):
             if not is_valid_email(register_username):
                 st.error("Please enter a valid email address.")
             else:
-                if check_openai_api_key(register_api_key):
+                # if check_openai_api_key(register_api_key):
                     try:
                         url = f"https://identitytoolkit.googleapis.com/v1/accounts:signUp?key={os.getenv('FIREBASE_API_KEY')}"
                         payload = {
@@ -164,15 +166,16 @@ if not st.session_state.logged_in:
                         }
                         response = requests.post(url, json=payload)
                         if response.status_code == 200:
-                            save_user_to_firebase(register_username, register_api_key)
+                            # save_user_to_firebase(register_username, register_api_key)
+                            save_user_to_firebase(register_username)
                             st.success("Registration successful! You can now log in.")
                         else:
                             st.error(response.json().get("error", {}).get("message", "Error during registration."))
 
                     except Exception as e:
                         st.error(f"Error during registration: {e}")
-                else:
-                    st.error("Invalid API Key. Please check and try again.")
+                # else:
+                    # st.error("Invalid API Key. Please check and try again.")
 
 # If logged in
 if st.session_state.logged_in:
@@ -195,7 +198,8 @@ if st.session_state.logged_in:
         with st.chat_message("user"):
             st.markdown(prompt)
 
-        response = query_rag(prompt, st.session_state.api_key)  # Use the cached API key from session state
+        # response = query_rag(prompt, st.session_state.api_key)  # Use the cached API key from session state
+        response = query_rag(prompt, openai_api_key)
         st.session_state.messages.append({"role": "assistant", "content": response})
 
         with st.chat_message("assistant"):
