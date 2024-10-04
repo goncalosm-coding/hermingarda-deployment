@@ -133,7 +133,8 @@ if not st.session_state.logged_in:
                         # Load user data and set API key in session state
                         user_data = get_user_from_firebase(login_username)
                         st.session_state.messages = user_data.get("messages", [])
-                        st.session_state.api_key = user_data.get("api_key", "")  # Store API key in session state
+                        st.session_state.api_key = user_data.get("api_key", "")
+                        st.write(f"API Key Loaded: {st.session_state.api_key}")  # Debugging line
                         update_user_logged_in_state(login_username, True)
                         st.rerun()
                     else:
