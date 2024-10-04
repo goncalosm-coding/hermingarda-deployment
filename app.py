@@ -7,17 +7,25 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 import requests  # For REST API calls
 import openai
+import json
 
 # Load environment variables
 load_dotenv()
 
-# Initialize Firebase Admin SDK
-cred = credentials.Certificate("rag-hermingarda-firebase-adminsdk-9uahz-97d21291d5.json")  # Update this path accordingly
+# Get the Firebase credentials JSON string from the environment variable
+firebase_credentials_json = os.getenv("FIREBASE_SDK_KEY")
+
+# Parse the JSON string to a dictionary
+firebase_credentials_dict = json.loads(firebase_credentials_json)
+
+# Initialize Firebase Admin SDK using the dictionary credentials
+cred = credentials.Certificate(firebase_credentials_dict)
 
 # Check if the default app already exists
 if not firebase_admin._apps:
     firebase_admin.initialize_app(cred)
 
+# Initialize Firestore
 db = firestore.client()
 
 # Firebase user data retrieval function

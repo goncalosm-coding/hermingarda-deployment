@@ -30,7 +30,6 @@ def main():
 
     # Create (or update) the data store.
     documents = load_documents()
-    print (documents[5])
     chunks = split_documents(documents)
     add_to_chroma(chunks)
 
