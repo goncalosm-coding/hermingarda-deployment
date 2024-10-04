@@ -195,21 +195,15 @@ if st.session_state.logged_in:
         st.session_state.messages.append({"role": "user", "content": prompt})
         with st.chat_message("user"):
             st.markdown(prompt)
+            
+        st.write(f"Using API Key: {st.session_state.api_key}")  # Debugging line
+        response = query_rag(prompt, st.session_state.api_key)  # Use the cached API key from session state
+        st.session_state.messages.append({"role": "assistant", "content": response})
 
-        # Retrieve the API key directly from Firestore
-        user_data = get_user_from_firebase(username)
-        api_key = user_data.get("api_key", "")
-        
-        if api_key:  # Check if the API key exists
-            response = query_rag(prompt, api_key)  # Pass the API key retrieved from Firestore
-            st.session_state.messages.append({"role": "assistant", "content": response})
+        with st.chat_message("assistant"):
+            st.markdown(response)
 
-            with st.chat_message("assistant"):
-                st.markdown(response)
-
-            save_messages_to_firebase(username, st.session_state.messages)
-        else:
-            st.error("API key not found. Please ensure you have registered correctly.")
+        save_messages_to_firebase(username, st.session_state.messages)
 
     # Sidebar options
     with st.sidebar:
