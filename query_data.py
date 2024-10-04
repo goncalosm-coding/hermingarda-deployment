@@ -51,7 +51,7 @@ def log_gpt4_usage(response):
 def query_rag(query_text: str, api_key: str):
     client = OpenAI(api_key=api_key)
 
-    embedding_function = get_embedding_function(api_key)
+    embedding_function = get_embedding_function()
 
     db = Chroma(
         collection_name="medicine-research",
