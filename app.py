@@ -195,8 +195,8 @@ if st.session_state.logged_in:
         st.session_state.messages.append({"role": "user", "content": prompt})
         with st.chat_message("user"):
             st.markdown(prompt)
-            
-        st.write(f"Using API Key: {st.session_state.api_key}")  # Debugging line
+
+        print(f"Using API Key: {st.session_state.api_key}")  # Debugging line
         response = query_rag(prompt, st.session_state.api_key)  # Use the cached API key from session state
         st.session_state.messages.append({"role": "assistant", "content": response})
 
