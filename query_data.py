@@ -49,39 +49,46 @@ def log_gpt4_usage(response):
     return total_cost
 
 def query_rag(query_text: str, api_key: str):
-    # Create OpenAI client with the user's API key
     client = OpenAI(api_key=api_key)
 
     embedding_function = get_embedding_function()
 
-    # Load the existing database.
     db = Chroma(
         collection_name="medicine-research",
         embedding_function=embedding_function,
-        persist_directory=CHROMA_PATH,  # Where to save data locally, remove if not necessary
+        persist_directory=CHROMA_PATH,
     )
 
     # Search the DB.
     results = db.similarity_search_with_score(query_text, k=5)
 
+    if not results:
+        return "No relevant documents found."
+
     context_text = "\n\n---\n\n".join([doc.page_content for doc, _score in results])
     prompt_template = ChatPromptTemplate.from_template(PROMPT_TEMPLATE)
     prompt = prompt_template.format(context=context_text, question=query_text)
 
-    # Use GPT-4 model
-    response = client.chat.completions.create(
-        model="gpt-4o",
-        messages=[
-            {"role": "user", "content": prompt}
-        ],
-    )
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4o",
+            messages=[{"role": "user", "content": prompt}],
+        )
+    except Exception as e:
+        print(f"Error with OpenAI API: {e}")
+        return "Error querying the assistant."
 
-    # Log GPT-4 token usage and calculate cost
     log_gpt4_usage(response)
     response_text = response.choices[0].message.content
 
     sources = [doc.metadata.get("id", None) for doc, _score in results]
-    formatted_response = f"Response: {response_text}\nSources: {sources}"
+
+    # Check if the user explicitly asked for sources
+    if "sources" in query_text.lower() or "references" in query_text.lower():
+        formatted_response = f"Response: {response_text}\nSources: {sources}"
+    else:
+        formatted_response = f"Response: {response_text}"
+
     print(formatted_response)
     return response_text
 
