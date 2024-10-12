@@ -1,6 +1,12 @@
 from query_data import query_rag
 from openai import OpenAI
 import warnings
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+api_key = os.getenv("OPENAI_API_KEY")
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
@@ -36,7 +42,7 @@ def query_and_validate(question: str, expected_response: str):
 
     client = OpenAI()
 
-    response_text = query_rag(question)
+    response_text = query_rag(question, api_key)
     prompt = EVAL_PROMPT.format(
         expected_response=expected_response, actual_response=response_text
     )

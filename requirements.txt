@@ -15,3 +15,4 @@ protobuf==3.20.*
 pypdf
 firebase-admin
 requests
+pytest

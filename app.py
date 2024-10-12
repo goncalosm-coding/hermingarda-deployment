@@ -1,6 +1,6 @@
 import streamlit as st
 import os
-import re  # Import regex module for email validation
+import re  # For email validation
 from query_data import query_rag
 from dotenv import load_dotenv
 import firebase_admin
@@ -137,7 +137,18 @@ if not st.session_state.logged_in:
                         update_user_logged_in_state(login_username, True)
                         st.rerun()
                     else:
-                        st.error(data.get("error", {}).get("message", "Invalid email or password."))
+                        # Print the entire response for debugging purposes
+                        print("Error response from Firebase:", data)
+
+                        # Handle specific error messages based on Firebase's response
+                        error_message = data.get("error", {}).get("message", "")
+                        if error_message == "INVALID_PASSWORD":
+                            st.error("Incorrect password. Please try again.")
+                        elif error_message == "EMAIL_NOT_FOUND":
+                            st.error("No account found with this email. Please check your email or register.")
+                        else:
+                            st.error("Login failed. Please check your credentials and try again.")
+
 
                 except Exception as e:
                     st.error(f"Error during login: {e}")
@@ -165,7 +176,7 @@ if not st.session_state.logged_in:
                         response = requests.post(url, json=payload)
                         if response.status_code == 200:
                             # save_user_to_firebase(register_username, register_api_key)
-                            save_user_to_firebase(register_username)
+                            save_user_to_firebase(register_username, register_api_key)
                             st.success("Registration successful! You can now log in.")
                         else:
                             st.error(response.json().get("error", {}).get("message", "Error during registration."))
@@ -198,6 +209,7 @@ if st.session_state.logged_in:
 
         response = query_rag(prompt, st.session_state.api_key)  # Use the cached API key from session state
         # response = query_rag(prompt, openai_api_key)
+
         st.session_state.messages.append({"role": "assistant", "content": response})
 
         with st.chat_message("assistant"):
@@ -215,7 +227,7 @@ if st.session_state.logged_in:
             st.success("Preferences saved successfully!")
 
         # Add a separator line
-        st.markdown("---")  # Horizontal line for separation
+        st.markdown("---")
 
         # Add forward message
         if len(st.session_state.messages) >= 2:
@@ -239,7 +251,7 @@ if st.session_state.logged_in:
             st.rerun()
 
         # Add a separator line
-        st.markdown("---")  # Horizontal line for separation
+        st.markdown("---")
 
         if st.button("Logout"):
             update_user_logged_in_state(username, False)

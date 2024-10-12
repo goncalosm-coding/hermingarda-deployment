@@ -20,7 +20,7 @@ API_KEY = os.getenv("OPENAI_API_KEY")
 
 def main():
 
-    # Check if the database should be cleared (using the --clear flag).
+    # Check if the database should be cleared (using the --reset flag).
     parser = argparse.ArgumentParser()
     parser.add_argument("--reset", action="store_true", help="Reset the database.")
     args = parser.parse_args()
@@ -40,6 +40,7 @@ def load_documents():
     # docs = loader.load()
 
     # Use DirectoryLoader to load all PDFs from the data directory
+
     loader = DirectoryLoader(DATA_PATH, glob="**/*.pdf", loader_cls=PyPDFLoader)
     docs = loader.load()
 
@@ -60,6 +61,7 @@ def split_documents(documents: list[Document]):
 def add_to_chroma(chunks: list[Document]):
 
     embedding_function = get_embedding_function()
+
     # Load the existing database.
     db = Chroma(
         collection_name="medicine-research",
@@ -91,7 +93,7 @@ def add_to_chroma(chunks: list[Document]):
 
 def calculate_chunk_ids(chunks):
 
-    # This will create IDs like "data/monopoly.pdf:6:2"
+    # This will create IDs like "data/documenttitle.pdf:6:2"
     # Page Source : Page Number : Chunk Index
 
     last_page_id = None
