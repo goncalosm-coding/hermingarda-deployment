@@ -27,7 +27,8 @@ def main():
     if args.reset:
         print("✨ Clearing Database")
         clear_database()
-
+        
+    clear_database()
     # Create (or update) the data store.
     documents = load_documents()
     chunks = split_documents(documents)
