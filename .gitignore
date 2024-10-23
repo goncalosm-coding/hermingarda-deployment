@@ -3,7 +3,7 @@ venv/
 
 # Ignore data folder
 data/
-# chroma/
+chroma/
 
 # Ignore Python cache files
 __pycache__/

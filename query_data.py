@@ -44,8 +44,8 @@ def log_gpt4_usage(response):
     cost_per_1k_tokens = 5.00 / 1000000  # Cost per token in euros
     total_cost = total_tokens * cost_per_1k_tokens
     
-    print(f"Total tokens used: {total_tokens} (Prompt: {prompt_tokens}, Completion: {completion_tokens})")
-    print(f"Cost for this query: €{total_cost:.4f}")
+    # print(f"Total tokens used: {total_tokens} (Prompt: {prompt_tokens}, Completion: {completion_tokens})")
+    # print(f"Cost for this query: €{total_cost:.4f}")
     return total_cost
 
 def query_rag(query_text: str, api_key: str):
@@ -75,7 +75,7 @@ def query_rag(query_text: str, api_key: str):
             messages=[{"role": "user", "content": prompt}],
         )
     except Exception as e:
-        print(f"Error with OpenAI API: {e}")
+        # print(f"Error with OpenAI API: {e}")
         return "Error querying the assistant."
 
     log_gpt4_usage(response)
@@ -89,7 +89,7 @@ def query_rag(query_text: str, api_key: str):
     else:
         formatted_response = f"Response: {response_text}"
 
-    print(formatted_response)
+    # print(formatted_response)
     return response_text
 
 if __name__ == "__main__":
